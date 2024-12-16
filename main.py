@@ -1,6 +1,9 @@
+import random
 import threading
 import time
 
+from entities.car import Car
+from entities.walker import Walker
 from enums import CarTraficLightColor, CarTraficLightPosition, WalkerTraficLightPosition
 from events import CarPassedEvent, TraficLightStartedEvent, WalkerPassedEvent, TimeOverEvent, ColorChangeEvent, CarCountOverflowEvent, WalkerCountOverflowEvent
 from mediator import Mediator
@@ -61,13 +64,31 @@ mediator.register(CarCountOverflowEvent, CarCountOverflowHandler(trafic_lights=c
 mediator.register(WalkerCountOverflowEvent, WalkerCountOverflowHandler(trafic_lights=walker_trafic_lights))
 mediator.register(TraficLightStartedEvent, TraficLightStartedHandler())
 
+
+def random_car_arrived(trafic_light: CarTraficLight):
+    if random.randint(0, 1) == 1:
+        trafic_light.add_car(Car())
+
+def random_walker_arrived(trafic_light: WalkerTraficLight):
+    if random.randint(0, 1) == 1:
+        trafic_light.add_walker(Walker())
+
+
 start_time = time.time()
 for trafic_light in trafic_lights:
     thread = threading.Thread(target=trafic_light.start)
     thread.start()
 
 while True:
-    if time.time() - start_time > 10:
+    for trafic_light in trafic_lights:
+        if isinstance(trafic_light, CarTraficLight):
+            random_car_arrived(trafic_light)
+        else:
+            random_walker_arrived(trafic_light)
+
+    time.sleep(1)
+
+    if time.time() - start_time > 20:
         for trafic_light in trafic_lights:
             trafic_light.stop()
 

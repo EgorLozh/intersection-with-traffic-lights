@@ -14,34 +14,14 @@ class TimeOverHandler(BaseTraficlightEventHandler):
         self._validate_position(tl)
 
         if tl.cur_color == CarTraficLightColor.RED:
-            self._handle_red_light(tl)
+            self._change_to_yellow([tl])
 
         elif tl.cur_color == CarTraficLightColor.YELLOW:
-            self._handle_yellow_light(tl)
+            if tl.prev_color == CarTraficLightColor.RED:
+                self._change_to_green([tl])
 
-        else:
-            self._handle_green_light(tl)
-
-    def _handle_red_light(self, tl: CarTraficLight):
-        if tl.position in self.horizontal_tl_positions:
-            self._change_to_yellow(self.horizontal_tls)
-        else:
-            self._change_to_yellow(self.vertical_tls)
-
-    def _handle_yellow_light(self, tl: CarTraficLight):
-        if tl.prev_color == CarTraficLightColor.RED:
-            if tl.position in self.horizontal_tl_positions:
-                self._change_to_red(self.horizontal_tls)
             else:
-                self._change_to_red(self.vertical_tls)
-        else:
-            if tl.position in self.horizontal_tl_positions:
-                self._change_to_green(self.horizontal_tls)
-            else:
-                self._change_to_green(self.vertical_tls)
+                self._change_to_red([tl])
 
-    def _handle_green_light(self, tl: CarTraficLight):
-        if tl.position in self.horizontal_tl_positions:
-            self._change_to_yellow(self.horizontal_tls)
         else:
-            self._change_to_yellow(self.vertical_tls)
+            self._change_to_yellow([tl])

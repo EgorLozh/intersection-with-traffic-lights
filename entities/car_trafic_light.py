@@ -64,6 +64,7 @@ class CarTraficLight(TraficLight):
                     self.mediator.handle(TimeOverEvent(trafic_light=self))
 
             if self.cur_color == CarTraficLightColor.GREEN:
+                self.car_drive()
                 if time.time() - self.color_time > self.green_time:
                     self.mediator.handle(TimeOverEvent(trafic_light=self))
             

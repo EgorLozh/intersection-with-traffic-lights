@@ -7,4 +7,4 @@ from entities.base import BaseEntity
 @dataclass
 class Walker(BaseEntity):
     def go(self):
-        time.sleep(2)
+        time.sleep(1)

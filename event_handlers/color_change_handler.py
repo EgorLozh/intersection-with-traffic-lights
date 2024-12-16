@@ -11,26 +11,12 @@ class ColorChangeHandler(BaseTraficlightEventHandler):
 
         print(f"\n{tl.cur_color.value} color change in trafic light {tl.position.value}\n")
 
-        if tl.cur_color == CarTraficLightColor.RED or tl.cur_color == WalkerTraficLightsColor.RED:
-            self._red_handle(tl)
+        if tl.cur_color == CarTraficLightColor.YELLOW:
+            self._change_to_yellow(self.trafic_lights)
 
-        elif tl.cur_color == CarTraficLightColor.YELLOW:
-            self._handle_yellow_light(tl)
+        elif tl.cur_color == CarTraficLightColor.GREEN:
+            if tl in self.horizontal_tls:
+                self._change_to_green(self.horizontal_tls)
 
-        elif tl.cur_color == CarTraficLightColor.GREEN or tl.cur_color == WalkerTraficLightsColor.GREEN:
-            self._handle_green_light(tl)
-
-    def _red_handle(self, tl: TraficLight) -> None:
-        if tl.position in self.horizontal_tl_positions:
-            self._change_to_yellow(self.vertical_tls)
-        else:
-            self._change_to_yellow(self.horizontal_tls)
-
-    def _handle_yellow_light(self, tl: TraficLight) -> None:
-        self._change_to_yellow(self.trafic_lights)
-
-    def _handle_green_light(self, tl: TraficLight) -> None:
-        if tl.position in self.horizontal_tl_positions:
-            self._change_to_yellow(self.vertical_tls)
-        else:
-            self._change_to_yellow(self.horizontal_tls)
+            elif tl in self.vertical_tls:
+                self._change_to_green(self.vertical_tls)
